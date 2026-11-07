@@ -1,0 +1,127 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><meta name="theme-color" content="#101711"><title>Arandor — Mission One</title><style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0c120e;touch-action:none;font-family:Georgia,serif;color:#f4e6c6}#app{position:fixed;inset:0;overflow:hidden}canvas{width:100%;height:100%;display:block;image-rendering:pixelated;touch-action:none}#ui{position:absolute;inset:0;pointer-events:none}#quest{position:absolute;left:1.5%;top:2%;background:#101912d9;border:2px solid #a88a54;padding:7px 10px;max-width:37%;font:clamp(10px,1.65vw,17px)/1.4 Arial}#quest strong{color:#f3cc7d;display:block;font-family:Georgia}#place{position:absolute;top:2%;right:2%;text-shadow:1px 2px #000;font:bold clamp(12px,1.8vw,19px) Georgia}#tip{position:absolute;left:50%;bottom:24%;transform:translateX(-50%);background:#0d160fe6;border:1px solid #bc9a64;padding:5px 11px;white-space:nowrap;font:clamp(10px,1.5vw,16px) Arial;display:none}#hpwrap{position:absolute;right:2%;top:12%;width:17%;font:clamp(10px,1.3vw,14px) Arial;display:none}#hpbar{height:10px;background:#542b26;border:1px solid #d0ad77}#hp{height:100%;width:100%;background:#d95642}#combat{position:absolute;bottom:5%;right:2%;display:none;gap:6px;pointer-events:auto}button{touch-action:none;user-select:none;border:2px solid #d0ac74;border-radius:7px;color:#fff0c9;background:#3c4b38d9;font:bold clamp(11px,1.5vw,17px) Arial;padding:8px 12px}#combat button{width:clamp(58px,10vw,110px);height:clamp(48px,11vh,85px)}#combat #attack{background:#893b2de8}#dialog{position:absolute;left:20%;right:20%;bottom:3%;min-height:25%;padding:10px 13px;background:#111b15f4;border:3px solid #c2a16a;box-shadow:0 3px 10px #000;pointer-events:auto;display:none}#speaker{color:#f1c77a;font-weight:bold;font-size:clamp(12px,2vw,19px)}#words{font-size:clamp(11px,1.7vw,17px);padding:5px 0 30px;line-height:1.35}#next{position:absolute;right:9px;bottom:7px}#menu,#end{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#0b120deF;pointer-events:auto;text-align:center}#end{display:none}.card{width:min(78%,610px);padding:16px 23px;border:3px solid #ae8e57;background:#1c281ef5;box-shadow:0 0 30px #000}.card h1{font-size:clamp(24px,4.5vw,43px);color:#f1d18c;margin:0 0 7px}.card p{font:clamp(12px,1.7vw,17px)/1.5 Arial}.card button{padding:10px 24px}#rotate{display:none;position:absolute;inset:0;z-index:20;align-items:center;justify-content:center;text-align:center;background:#0b120df5;padding:24px}#rotate h2{font-size:23px}#inventory{position:absolute;left:1.5%;top:18%;padding:6px 9px;background:#111b15df;border:2px solid #ac8c5e;font:clamp(10px,1.35vw,14px) Arial;max-width:30%;pointer-events:auto}#inventory button{padding:5px 9px;font-size:clamp(10px,1.3vw,14px);margin-top:5px}#toast{position:absolute;left:50%;top:15%;transform:translateX(-50%);background:#111c14ec;border:2px solid #e0b76b;padding:9px 15px;text-align:center;max-width:62%;font:clamp(11px,1.6vw,17px) Arial;display:none;pointer-events:none}#lootbtn{position:absolute;right:2%;bottom:5%;display:none;pointer-events:auto;background:#82613adf}#journal{position:absolute;inset:10% 17%;background:#142018f5;border:3px solid #d1ad71;display:none;pointer-events:auto;padding:18px;overflow:auto;font:clamp(12px,1.6vw,17px)/1.5 Arial}#journal h2{color:#eac47f;margin:0 0 8px}#journal button{float:right}#fullscreen{position:absolute;bottom:2%;right:2%;pointer-events:auto;padding:4px 7px;background:#101912aa;font:12px Arial;z-index:8}
+@media(orientation:portrait){#rotate{display:flex}}@media(max-height:420px){#dialog{bottom:2%;min-height:30%}#words{padding-bottom:23px}}
+</style></head><body><div id="app"><canvas id="c" width="960" height="540"></canvas><div id="ui"><div id="quest"><strong>THE LAST ALLIANCE OF ARANDOR</strong><span id="objective">Follow the trail toward Hendersfield.</span></div><div id="place">OUTSIDE HENDERSFIELD</div><div id="hpwrap">JOHNNY <div id="hpbar"><div id="hp"></div></div></div><div id="inventory"><b>🎒 SATCHEL</b><div id="items">0 gold · 0 food · 0 relics</div><button id="eat">🍎 Eat food (+35 HP)</button> <button id="bag">Journal</button></div><div id="toast"></div><button id="lootbtn">OPEN CHEST</button><div id="journal"><button id="closebag">✕ CLOSE</button><h2>Johnny's Journal</h2><div id="journaltext">Your adventure begins.</div></div><div id="tip"></div><div id="combat"><button id="attack">⚔<br>ATTACK</button><button id="dodge">↝<br>DODGE</button><button id="block">▣<br>BLOCK</button></div><div id="dialog"><div id="speaker"></div><div id="words"></div><button id="next">CONTINUE ▶</button></div></div><button id="fullscreen">⛶ Fullscreen</button><div id="menu"><div class="card"><h1>THE LAST ALLIANCE<br>OF ARANDOR</h1><p>MISSION ONE · THE FALL OF HENDERSFIELD</p><p>Johnny and his friends are outside town when they notice smoke. Follow the trail into the village, find his home, take his father's sword, and survive a one-on-one fight.</p><p><b>Tap anywhere on the ground to walk there. Explore for hidden story clues, loot chests from common to legendary, collect gold and food, and check your journal.</b> In battle, use Attack, Dodge, and Block.</p><button id="start">BEGIN MISSION</button></div></div><div id="end"><div class="card"><h1>MISSION ONE COMPLETE</h1><p>Johnny survived the attack and found Mara. Their journey begins.</p><button id="restart">PLAY AGAIN</button></div></div><div id="rotate"><div><h2>↻ Turn your phone sideways</h2><p>Arandor plays in landscape mode.</p></div></div></div><script>
+(()=>{
+const c=document.getElementById('c'),g=c.getContext('2d'),$=id=>document.getElementById(id),W=960,H=540;
+g.imageSmoothingEnabled=false;let scene=0,playing=false,locked=false,dialog=[],after=null,gold=0,food=1,relics=[],gear=[],opened=new Set(),toastUntil=0,goal={x:380,y:410},p={x:380,y:410,face:1},cam={x:0,y:0},time=0,last=0,enemy={x:0,y:0,hp:100,cd:0,wind:0},hp=100,block=false,dodge=0,atk=0,flash=0,step=0,smoke=[],sparks=[];
+const rnd=(n)=>Math.round(n),clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
+function r(x,y,w,h,col){g.fillStyle=col;g.fillRect(rnd(x),rnd(y),rnd(w),rnd(h))}
+function circ(x,y,rad,col){g.fillStyle=col;g.beginPath();g.arc(x,y,rad,0,Math.PI*2);g.fill()}
+function text(t,x,y,sz=16,col='#f9edca'){g.font=`bold ${sz}px Georgia`;g.textAlign='center';g.fillStyle='#131810';g.fillText(t,x+2,y+2);g.fillStyle=col;g.fillText(t,x,y)}
+function seed(x,y){let n=Math.sin(x*127.1+y*311.7)*43758.5453;return n-Math.floor(n)}
+function grass(w,h,burn=false){r(0,0,w,h,burn?'#6a6549':'#4e8750');for(let y=0;y<h;y+=23)for(let x=0;x<w;x+=24){let v=seed(x,y);r(x+v*12,y+v*8,4,3,burn?'#756d52':'#68965a');if(v>.68)r(x+12,y+16,3,5,burn?'#423c33':'#306c42')}}
+function tree(x,y,s=1){g.save();g.translate(x,y);g.scale(s,s);r(-8,-15,16,44,'#70482b');circ(-19,-26,28,'#1d5638');circ(17,-30,26,'#286940');circ(0,-48,31,'#3a8147');r(-10,-59,14,6,'#619e58');g.restore()}
+function fence(x,y,len){for(let i=0;i<len;i+=20){r(x+i,y,6,27,'#795135');r(x+i-2,y,10,4,'#a77c4b')}r(x,y+8,len,5,'#b18b5c');r(x,y+21,len,4,'#8e663e')}
+function house(x,y,s=1,burn=false){g.save();g.translate(x,y);g.scale(s,s);r(-76,-50,152,124,'#544838');r(-70,-43,140,113,'#c3a77c');r(-83,-62,166,20,'#54372e');for(let k=0;k<6;k++)r(-80+k*4,-80+k*4,160-k*8,11,'#854b39');r(-20,16,40,54,'#543727');r(-15,20,30,50,'#805333');r(8,44,4,4,'#d2b273');for(let i of [-53,36]){r(i,-18,23,25,'#604a37');r(i+3,-15,17,19,burn?'#d96729':'#88abb0');r(i+10,-15,2,19,'#f5dca5');r(i+3,-7,17,2,'#f5dca5')}if(burn){for(let i=0;i<12;i++){let a=-76+i*13;r(a,-86-(i%3)*7,8,24,'#e85e28');r(a+2,-92-(i%4)*8,4,19,'#ffb24d')}r(-82,-65,25,12,'#312d29');r(55,-61,29,12,'#282a27')}g.restore()}
+function person(x,y,shirt='#4d6b82',kid=true,face=1,down=false){g.save();g.translate(rnd(x),rnd(y));if(down)g.rotate(1.4);let s=kid?1:1.32;g.scale(s,s);r(-11,14,9,17,'#493c31');r(3,14,9,17,'#493c31');r(-12,-11,24,27,shirt);r(-17,-8,5,20,'#b78760');r(12,-8,5,20,'#b78760');r(-10,-31,20,20,'#d6a17c');r(-11,-34,22,9,'#4d3327');r(face>0?4:-6,-22,2,2,'#30241e');g.restore()}
+function sword(x,y,held=false){g.save();g.translate(x,y);g.rotate(held?-.6:.5);r(-3,-34,6,39,'#c4d4d0');r(-1,-32,2,32,'#faf9de');r(-13,5,26,5,'#d8b56d');r(-3,10,6,18,'#553b2b');r(-5,27,10,5,'#f0c46c');g.restore()}
+const chests=[
+{scene:0,x:250,y:650,tier:0,id:'trail-stash'},{scene:0,x:1200,y:340,tier:1,id:'old-hunter-cache'},{scene:0,x:1080,y:810,tier:2,id:'fallen-traveler'},
+{scene:1,x:410,y:500,tier:0,id:'market-box'},{scene:1,x:1360,y:530,tier:1,id:'smiths-chest'},{scene:1,x:290,y:970,tier:2,id:'guard-supply'},{scene:1,x:1590,y:1020,tier:3,id:'royal-cache'},
+{scene:2,x:330,y:370,tier:0,id:'family-pantry'},{scene:2,x:1010,y:640,tier:3,id:'hidden-heirloom'},
+{scene:3,x:855,y:575,tier:1,id:'fallen-guard'}];
+const secrets=[
+{scene:0,x:565,y:500,id:'wooden-sword',name:'Johnny’s Old Wooden Sword',description:'A battered wooden practice sword. The boys used to play knights here.'},
+{scene:0,x:1330,y:620,id:'carved-stone',name:'Stone Marked with a Crown',description:'An old stone carved with a crown and an unfamiliar symbol.'},
+{scene:1,x:600,y:510,id:'market-ledger',name:'Burned Market Ledger',description:'A scorched ledger listing supplies delivered to the village before the attack.'},
+{scene:1,x:1470,y:880,id:'iron-crest',name:'Broken Iron Guard Crest',description:'A broken insignia dropped during the attack on Hendersfield.'},
+{scene:2,x:900,y:490,id:'family-token',name:'Family Keepsake',description:'A small token hidden near Johnny’s home. A reminder of what he is fighting for.'}];
+const tiers=['COMMON','UNCOMMON','RARE','LEGENDARY'],tierColors=['#aa8353','#65bd76','#74baf0','#f5bc56'];
+function chest(x,y,tier,openedAlready){r(x-19,y-11,38,25,'#30271f');r(x-17,y-14,34,21,openedAlready?'#554f45':['#986f3f','#517a58','#4778a0','#b7852c'][tier]);r(x-17,y-16,34,6,openedAlready?'#6e685a':'#d1ac67');r(x-3,y-10,6,14,'#e5c77b');if(!openedAlready){r(x-22,y-19,4,4,tierColors[tier]);r(x+19,y-20,4,4,tierColors[tier])}}
+function drawLoot(){for(let ch of chests)if(ch.scene===scene)chest(ch.x,ch.y,ch.tier,opened.has(ch.id));for(let sec of secrets)if(sec.scene===scene&&!relics.some(a=>a.id===sec.id)){circ(sec.x,sec.y,12,'#5b9d7a');r(sec.x-3,sec.y-12,6,24,'#e8d8a4');r(sec.x-10,sec.y-3,20,6,'#e8d8a4')}}
+function updateBag(){$('items').textContent=`${gold} gold · ${food} food · ${relics.length}/${secrets.length} secrets · ${gear.length} gear`;$('journaltext').innerHTML='<b>Equipment</b><p>'+ (gear.length?gear.map(x=>'⚔ '+x).join('<br>'):'Father’s sword awaits')+'</p><b>Story secrets</b><p>'+(relics.length?relics.map(x=>'✦ '+x.name+' — '+x.description).join('<br><br>'):'Explore the world to discover hidden memories and clues.')+'</p>'}
+function showToast(t){$('toast').textContent=t;$('toast').style.display='block';toastUntil=time+3.3}
+function nearest(){let all=[...chests.filter(ch=>ch.scene===scene&&!opened.has(ch.id)).map(a=>({...a,kind:'chest'})),...secrets.filter(a=>a.scene===scene&&!relics.some(v=>v.id===a.id)).map(a=>({...a,kind:'secret'}))];return all.map(a=>({...a,d:Math.hypot(p.x-a.x,p.y-a.y)})).sort((a,b)=>a.d-b.d)[0]}
+function collect(a){if(!a||a.d>95)return;if(a.kind==='secret'){relics.push(a);showToast('✦ DISCOVERED: '+a.name);say([['Johnny',a.description]])}else{opened.add(a.id);let coins=[9,28,65,140][a.tier]+Math.floor(seed(a.x,a.y)*25),meals=[1,1,2,3][a.tier];gold+=coins;food+=meals;let equipment=['Worn Leather Gloves','Hunter’s Charm','Iron Guard Buckler','Heirloom Amulet'][a.tier];gear.push(equipment);showToast(`${tiers[a.tier]} CHEST · +${coins} gold · +${meals} food · ${equipment}`)}updateBag()}
+function groundScene(){
+ grass(1600,950);
+ // winding path from friends down toward village gate
+ for(let y=140;y<950;y+=15){let center=760+Math.sin(y/130)*135;for(let x=center-92;x<center+92;x+=15){r(x,y,15,15,seed(x,y)>.4?'#b59c70':'#9c865f')}}
+ for(let i=0;i<85;i++){let x=seed(i,4)*1570,y=seed(i,7)*930;if(Math.abs(x-(760+Math.sin(y/130)*135))<145)continue;tree(x,y,.65+seed(i,9)*.55)}
+ for(let i=0;i<24;i++){let x=seed(i,13)*1550,y=seed(i,17)*920;circ(x,y,4,['#d5b85e','#d79d8c','#f1d79b'][i%3])}
+ person(320,370,'#6e6347',true);person(420,367,'#6a576c',true);person(510,386,'#637c51',true);
+ text('QUINTAVIUS',320,329,13);text('JASPER',420,326,13);text('FELIX',510,343,13);
+ // distant smoke and village edge
+ r(1000,720,430,120,'#6d604a');for(let i=0;i<6;i++){house(1040+i*63,745,.4,true)}
+ for(let i=0;i<14;i++)circ(1050+seed(i,22)*370,620-seed(i,25)*220,16+seed(i,28)*25,'#55554b88');
+ text('↓ TRAIL TO HENDERSFIELD',770,840,21,'#f6dca1');
+}
+function villageScene(){
+ grass(1800,1200,true);
+ for(let y=0;y<1200;y+=18)for(let x=795;x<1030;x+=18)r(x,y,17,17,seed(x,y)>.4?'#a49373':'#8b8169');
+ for(let x=0;x<1800;x+=22)r(x,1050,22,18,'#827761');
+ fence(70,270,460);fence(1120,290,530);fence(95,780,420);fence(1130,800,470);
+ const houses=[[350,330,1.2],[580,300,.9],[1240,310,1],[1480,380,1.2],[350,670,1],[630,800,.95],[1270,660,1],[1500,820,.9]];
+ houses.forEach(([x,y,s],i)=>house(x,y,s,true));
+ for(let i=0;i<23;i++){let x=seed(i,4)*1700,y=seed(i,6)*1100;if(x>730&&x<1080)continue;tree(x,y,.6+seed(i,8)*.4)}
+ for(let i=0;i<20;i++){let x=seed(i,19)*1700,y=seed(i,20)*1100;r(x,y,12,8,'#4a4036');r(x+4,y-5,8,6,'#3b3430')}
+ house(1400,1010,1.4,true);text('JOHNNY’S HOME →',1280,1040,18,'#f9dd9b');
+ text('HENDERSFIELD',900,140,27,'#f8d7a0');
+ for(let i=0;i<10;i++){let x=seed(i,41)*1750,y=seed(i,42)*1050;if(x>750&&x<1060)continue;person(x,y,'#63564b',false,1,true)}
+}
+function homeScene(){
+ grass(1250,800,true);for(let y=180;y<800;y+=18)for(let x=420;x<800;x+=18)r(x,y,17,17,'#9c8a6b');
+ house(640,285,2.3,true);fence(90,580,350);fence(870,570,300);tree(120,380);tree(1080,420);tree(200,730);tree(1100,720);
+ r(475,585,110,25,'#4e3d34');r(510,578,55,14,'#755444');person(640,580,'#626650',false,1,true);sword(680,580);
+ text('FATHER',640,534,15,'#f4d5a5');for(let i=0;i<20;i++){let x=seed(i,35)*1150,y=seed(i,36)*780;circ(x,y,5,'#2c302b88')}
+}
+function fightScene(){
+ grass(1000,680,true);for(let y=200;y<680;y+=20)for(let x=300;x<720;x+=20)r(x,y,19,19,'#a38e6a');
+ house(520,170,1.4,true);tree(85,340);tree(880,380);fence(50,470,180);fence(770,480,180);
+ person(enemy.x,enemy.y,'#4e5054',false,-1);sword(enemy.x-24,enemy.y-7,true);
+ r(enemy.x-46,enemy.y-73,92,10,'#4e2422');r(enemy.x-46,enemy.y-73,92*enemy.hp/100,10,'#d35a40');
+ text('IRON GUARD',enemy.x,enemy.y-82,14,'#ffcead');
+}
+function draw(){
+g.clearRect(0,0,W,H);let sizes=scene===0?[1600,950]:scene===1?[1800,1200]:scene===2?[1250,800]:[1000,680];
+cam.x=clamp(p.x-W/2,0,sizes[0]-W);cam.y=clamp(p.y-H/2,0,sizes[1]-H);
+g.save();g.translate(-rnd(cam.x),-rnd(cam.y));
+if(scene===0)groundScene();else if(scene===1)villageScene();else if(scene===2)homeScene();else fightScene();
+if(scene===3&&enemy.hp>0&&enemy.wind>0){circ(enemy.x,enemy.y,58,'#e65e2b44');text('!',enemy.x,enemy.y-108,23,'#ffcb75')}
+person(p.x,p.y,'#456a84',true,p.face);
+if(scene>=2&&step>=3)sword(p.x+18,p.y-8,true);
+if(scene===3&&dodge>0)circ(p.x,p.y,29,'#b7d7e255');
+if(scene===3&&block)circ(p.x,p.y,32,'#b1c3d977');
+drawLoot();if(atk>0&&scene===3){g.strokeStyle='#f6e8b8';g.lineWidth=7;g.beginPath();g.arc(p.x,p.y,48,-1.2,.7);g.stroke()}
+g.restore();
+if(flash>0)r(0,0,W,H,'#fff1c833');
+}
+function say(items,callback){dialog=items.slice();after=callback;locked=true;advance()}
+function advance(){if(dialog.length){let [who,words]=dialog.shift();$('speaker').textContent=who;$('words').textContent=words;$('dialog').style.display='block'}else{$('dialog').style.display='none';locked=false;let cb=after;after=null;if(cb)cb()}}
+$('next').onclick=advance;
+function setscene(n){scene=n;goal={x:0,y:0};if(n===0){p={x:380,y:450,face:1};$('place').textContent='OUTSIDE HENDERSFIELD';$('objective').textContent='Follow the trail south toward the smoke.'}if(n===1){p={x:900,y:140,face:1};$('place').textContent='HENDERSFIELD — UNDER ATTACK';$('objective').textContent='Find Johnny’s family home on the east side of town.'}if(n===2){p={x:220,y:640,face:1};$('place').textContent='JOHNNY’S HOME';$('objective').textContent='Find Father and take his sword.'}if(n===3){p={x:260,y:460,face:1};enemy={x:720,y:450,hp:100,cd:1.5,wind:0};hp=100;block=false;dodge=0;atk=0;$('place').textContent='THE COURTYARD — FIGHT';$('objective').textContent='Defeat the Iron Guard soldier. Tap to move; use Attack, Dodge, Block.';$('combat').style.display='flex';$('hpwrap').style.display='block';$('hp').style.width='100%'}goal={x:p.x,y:p.y};$('tip').style.display='none'}
+function check(){if(locked||!playing)return;
+ if(scene===0&&p.y>810){setscene(1);say([['Johnny','That smoke... it’s coming from Hendersfield!'],['Narrator','Johnny leaves his friends behind and races into the village.']])}
+ else if(scene===1&&p.x>1380&&p.y>900){setscene(2);say([['Johnny','Father! Mother!'],['Narrator','His home is burning. There is no answer.']])}
+ else if(scene===2&&step===2&&Math.hypot(p.x-670,p.y-590)<75){step=3;say([['Johnny','Father... no...'],['Narrator','His father lies motionless beside the house. Johnny kneels and takes the sword from beside his body.'],['Johnny','I’ll keep it with me.']],()=>{setscene(3);say([['Iron Guard soldier','There’s another one!'],['Johnny','Stay away from me!'],['Narrator','Johnny raises his father’s sword.']])})}
+}
+$('lootbtn').onclick=()=>collect(nearest());
+$('eat').onclick=()=>{if(food>0&&hp<100){food--;hp=Math.min(100,hp+35);$('hp').style.width=hp+'%';showToast('Ate food · +35 health');updateBag()}else showToast(food===0?'No food left. Find a chest!':'Already at full health.')};
+$('bag').onclick=()=>{$('journal').style.display='block';updateBag()};$('closebag').onclick=()=>{$('journal').style.display='none'};
+function tapMove(clientX,clientY){if(!playing||locked)return;let b=c.getBoundingClientRect(),x=(clientX-b.left)/b.width*W,y=(clientY-b.top)/b.height*H;goal={x:clamp(x+cam.x,20,[1600,1800,1250,1000][scene]-20),y:clamp(y+cam.y,80,[950,1200,800,680][scene]-20)};let n=nearest();if(n&&Math.hypot(goal.x-n.x,goal.y-n.y)<50&&n.d<95)collect(n)}
+c.addEventListener('pointerdown',e=>{e.preventDefault();tapMove(e.clientX,e.clientY)});
+function attack(){if(!playing||locked||scene!==3||enemy.hp<=0||atk>0)return;atk=.23;if(Math.hypot(p.x-enemy.x,p.y-enemy.y)<120){enemy.hp=Math.max(0,enemy.hp-25);flash=.09;if(enemy.hp===0){say([['Narrator','The soldier falls. Johnny stands shaking, still holding his father’s sword.'],['Mara','Johnny!'],['Johnny','Mara! You’re alive!'],['Mara','We need to leave. Now.']],()=>{$('end').style.display='flex';$('combat').style.display='none';playing=false})}}}
+function doDodge(){if(scene!==3||locked||dodge>0)return;dodge=.5;let dx=p.x-enemy.x,dy=p.y-enemy.y,len=Math.hypot(dx,dy)||1;p.x=clamp(p.x+dx/len*105,30,970);p.y=clamp(p.y+dy/len*105,100,650);goal={x:p.x,y:p.y}}
+$('attack').onclick=attack;$('dodge').onclick=doDodge;
+$('block').addEventListener('pointerdown',e=>{e.preventDefault();block=true;$('block').setPointerCapture(e.pointerId)});
+for(let ev of ['pointerup','pointercancel','lostpointercapture'])$('block').addEventListener(ev,()=>block=false);
+document.addEventListener('keydown',e=>{if(e.key===' '){attack();e.preventDefault()}if(e.key.toLowerCase()==='b')block=true;if(e.key.toLowerCase()==='shift')doDodge();let d={ArrowUp:[0,-70],ArrowDown:[0,70],ArrowLeft:[-70,0],ArrowRight:[70,0]}[e.key];if(d){goal={x:p.x+d[0],y:p.y+d[1]};e.preventDefault()}});
+document.addEventListener('keyup',e=>{if(e.key.toLowerCase()==='b')block=false});
+function tick(t){let dt=Math.min((t-last)/1000||0,.05);last=t;time+=dt;if(playing&&!locked){
+ let dx=goal.x-p.x,dy=goal.y-p.y,d=Math.hypot(dx,dy);if(d>3){let v=Math.min(d,210*dt);p.x+=dx/d*v;p.y+=dy/d*v;if(Math.abs(dx)>2)p.face=dx>0?1:-1}
+ if(atk>0)atk-=dt;if(dodge>0)dodge-=dt;if(flash>0)flash-=dt;
+ if(scene===3&&enemy.hp>0){let dd=Math.hypot(p.x-enemy.x,p.y-enemy.y);enemy.cd-=dt;if(dd>90){let v=Math.min(dd-80,95*dt);enemy.x+=(p.x-enemy.x)/dd*v;enemy.y+=(p.y-enemy.y)/dd*v}else if(enemy.cd<=0&&enemy.wind<=0){enemy.wind=.55}
+ if(enemy.wind>0){enemy.wind-=dt;if(enemy.wind<=0){enemy.cd=1.5;if(Math.hypot(p.x-enemy.x,p.y-enemy.y)<100&&dodge<=0){hp=Math.max(0,hp-(block?5:24));$('hp').style.width=hp+'%';flash=.16;if(hp===0){locked=true;say([['Narrator','Johnny falls. Try the fight again.']],()=>{locked=false;setscene(3)})}}}}}
+ if(scene===2&&step<2&&Math.hypot(p.x-640,p.y-580)<130){step=2;say([['Johnny','Father?'],['Narrator','Johnny sees his father lying in the courtyard. The sword is beside him.']])}
+ check();let near=nearest();$('lootbtn').style.display=near&&near.d<95?'block':'none';$('lootbtn').textContent=near&&near.kind==='secret'?'✦ EXAMINE':near?tiers[near.tier]+' CHEST':'OPEN';if(toastUntil<time)$('toast').style.display='none';
+ let message=scene===0?'↓ Follow the trail south':scene===1?'↘ Find Johnny’s home in the southeast':scene===2?'Approach Father and the sword':scene===3?'Tap near the soldier to move into range':'';
+ $('tip').textContent=message;$('tip').style.display=scene===3?'none':'block';
+}
+draw();requestAnimationFrame(tick)}
+function begin(){step=0;gold=0;food=1;relics=[];gear=[];opened=new Set();updateBag();playing=true;locked=false;$('menu').style.display='none';$('end').style.display='none';$('combat').style.display='none';$('hpwrap').style.display='none';setscene(0);say([['Narrator','Outside Hendersfield, Johnny has spent the afternoon with his friends.'],['Quintavius','Johnny, look over there.'],['Jasper','Is that smoke?'],['Johnny','That’s coming from town. I have to go!']])}
+$('start').onclick=begin;$('restart').onclick=begin;
+$('fullscreen').onclick=()=>{let el=document.documentElement;if(!document.fullscreenElement&&el.requestFullscreen)el.requestFullscreen().catch(()=>{});else if(document.exitFullscreen)document.exitFullscreen()};
+requestAnimationFrame(tick);
+})();
+</script></body></html>
